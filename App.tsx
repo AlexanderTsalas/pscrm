@@ -15,7 +15,6 @@ import {
   MoreHorizontal, 
   Phone, 
   Mail, 
-  Sparkles, 
   X,
   Plus, 
   Search, 
@@ -30,7 +29,11 @@ import {
   FileSpreadsheet, 
   ChevronDown,
   Lock,
-  LucideIcon
+  LucideIcon,
+  ArrowLeft,
+  ShieldCheck,
+  Smartphone,
+  CheckCircle2
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -49,9 +52,228 @@ import { Session } from '@supabase/supabase-js';
 
 import { supabase } from './supabaseClient';
 import { Client, Stage, View, Transaction } from './types';
-import { generateFollowUpEmail } from './services/geminiService';
 
 // --- Components ---
+
+// 0. Landing Page Component
+const LandingPage = ({ onLoginClick }: { onLoginClick: () => void }) => {
+  return (
+    <div className="min-h-screen bg-[#0f172a] text-white font-sans overflow-x-hidden selection:bg-cyan-500 selection:text-white relative">
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float 6s ease-in-out infinite;
+          animation-delay: 3s;
+        }
+      `}</style>
+
+      {/* Background Gradients/Glows */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px]" />
+         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-600/20 rounded-full blur-[120px]" />
+         <div className="absolute top-[40%] left-[40%] w-[20%] h-[20%] bg-blue-600/10 rounded-full blur-[100px]" />
+      </div>
+
+      {/* Navbar */}
+      <nav className="relative z-50 max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-gradient-to-tr from-cyan-400 to-blue-600 p-2.5 rounded-xl shadow-lg shadow-cyan-500/20">
+            <Activity className="text-white" size={24} />
+          </div>
+          <span className="font-bold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+            PlasticSurg
+          </span>
+        </div>
+        <button
+          onClick={onLoginClick}
+          className="group relative px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-white/10 transition-all duration-300 backdrop-blur-md overflow-hidden"
+        >
+          <span className="relative z-10 text-sm font-medium tracking-wide group-hover:text-cyan-400 transition-colors">
+            Σύνδεση
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+        </button>
+      </nav>
+
+      {/* Hero Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-10 lg:pt-20 pb-32">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          {/* Text Content */}
+          <div className="space-y-8 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-900/30 border border-cyan-500/30 text-cyan-400 text-xs font-semibold tracking-wider uppercase">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              CRM Επομενης Γενιας
+            </div>
+            
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              Διαχειριστείτε το <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                Μέλλον της Κλινικής
+              </span>
+            </h1>
+            
+            <p className="text-lg text-gray-400 leading-relaxed max-w-xl border-l-2 border-white/10 pl-6">
+              Ανακαλύψτε το σύμπαν της ολοκληρωμένης διαχείρισης ασθενών. AI αναλύσεις, 
+              οικονομικός έλεγχος και ταχύτητα πωλήσεων — όλα σε ένα υπερσύγχρονο dashboard.
+            </p>
+            
+            <div className="flex flex-wrap gap-4 pt-4">
+              <button
+                onClick={onLoginClick}
+                className="relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-105 transition-all duration-300 flex items-center gap-2 group"
+              >
+                Είσοδος στην Εφαρμογή
+                <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              </button>
+              
+              <button 
+                 onClick={onLoginClick}
+                 className="px-8 py-4 rounded-xl font-semibold text-white border border-white/10 hover:bg-white/5 transition-all flex items-center gap-2 group"
+              >
+                 <ShieldCheck size={20} className="text-gray-400 group-hover:text-white transition-colors" />
+                 Ασφαλής Πρόσβαση
+              </button>
+            </div>
+
+            {/* Metrics */}
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/5">
+                <div>
+                   <h4 className="text-3xl font-bold text-white">98<span className="text-cyan-500">%</span></h4>
+                   <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Ικανοποιηση</p>
+                </div>
+                <div>
+                   <h4 className="text-3xl font-bold text-white">2.5<span className="text-purple-500">x</span></h4>
+                   <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Αυξηση Εσοδων</p>
+                </div>
+                <div>
+                   <h4 className="text-3xl font-bold text-white">24<span className="text-blue-500">/7</span></h4>
+                   <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Διαθεσιμοτητα</p>
+                </div>
+            </div>
+          </div>
+
+          {/* 3D Visual */}
+          <div className="relative perspective-[2000px] group hidden lg:block">
+            {/* Floating Elements */}
+            <div className="absolute -top-12 -right-12 z-0 w-64 h-64 bg-cyan-500/20 rounded-full blur-[80px] animate-pulse" />
+            
+            <div className="relative z-10 [transform:rotateY(-12deg)_rotateX(5deg)] hover:[transform:rotateY(-8deg)_rotateX(2deg)] transition-transform duration-700 ease-out [transform-style:preserve-3d]">
+                {/* Main Card */}
+                <div className="bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl shadow-black/50 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                    
+                    {/* Mock UI Header */}
+                    <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
+                        <div className="flex gap-2">
+                           <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                           <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                           <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                        </div>
+                        <div className="h-2 w-20 bg-white/10 rounded-full" />
+                    </div>
+                    
+                    {/* Mock UI Content */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                       <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                          <div className="flex justify-between items-start mb-4">
+                             <div className="p-2 bg-cyan-500/20 rounded-lg text-cyan-400"><Users size={16}/></div>
+                             <span className="text-green-400 text-xs font-bold">+12%</span>
+                          </div>
+                          <div className="h-6 w-16 bg-white/20 rounded mb-2" />
+                          <div className="h-3 w-24 bg-white/10 rounded" />
+                       </div>
+                       <div className="bg-white/5 p-4 rounded-xl border border-white/5">
+                           <div className="flex justify-between items-start mb-4">
+                             <div className="p-2 bg-purple-500/20 rounded-lg text-purple-400"><Euro size={16}/></div>
+                             <span className="text-green-400 text-xs font-bold">+8%</span>
+                          </div>
+                          <div className="h-6 w-16 bg-white/20 rounded mb-2" />
+                          <div className="h-3 w-24 bg-white/10 rounded" />
+                       </div>
+                    </div>
+
+                    <div className="bg-white/5 rounded-xl border border-white/5 p-4 space-y-3">
+                        <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500" />
+                            <div className="flex-1 space-y-1">
+                                <div className="h-2 w-32 bg-white/20 rounded" />
+                                <div className="h-2 w-20 bg-white/10 rounded" />
+                            </div>
+                            <div className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs">Ενεργός</div>
+                        </div>
+                         <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-400 to-pink-500" />
+                            <div className="flex-1 space-y-1">
+                                <div className="h-2 w-28 bg-white/20 rounded" />
+                                <div className="h-2 w-16 bg-white/10 rounded" />
+                            </div>
+                            <div className="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-xs">Αναμονή</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Floating Card 1 */}
+                <div className="absolute -right-8 top-20 bg-gray-800/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-xl [transform:translateZ(40px)] animate-float">
+                   <div className="flex items-center gap-3">
+                      <div className="p-2 bg-green-500/20 rounded-lg text-green-400">
+                         <CheckCircle2 size={18} />
+                      </div>
+                      <div>
+                         <p className="text-[10px] text-gray-400 uppercase tracking-wide">Νέος Ασθενής</p>
+                         <p className="text-sm font-bold text-white">Εγγραφή</p>
+                      </div>
+                   </div>
+                </div>
+
+                 {/* Floating Card 2 */}
+                <div className="absolute -left-8 bottom-20 bg-gray-800/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-xl [transform:translateZ(60px)] animate-float-delayed">
+                   <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                         <Smartphone size={18} />
+                      </div>
+                      <div>
+                         <p className="text-[10px] text-gray-400 uppercase tracking-wide">Επίσκεψη</p>
+                         <p className="text-sm font-bold text-white">Επιβεβαιώθηκε</p>
+                      </div>
+                   </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature Strip */}
+        <div className="mt-10 lg:mt-20 grid md:grid-cols-3 gap-6">
+           {[
+             { title: "Έξυπνος Προγραμματισμός", desc: "Αυτοματοποιημένες υπενθυμίσεις & follow-ups που δεν χάνουν ποτέ ραντεβού.", icon: Calendar },
+             { title: "Οικονομική Ανάλυση", desc: "Παρακολουθήστε έσοδα και προβλέψεις σε πραγματικό χρόνο.", icon: TrendingUp },
+             { title: "Πορεία Ασθενούς", desc: "Οπτικό Kanban pipeline για την παρακολούθηση κάθε ευκαιρίας.", icon: KanbanIcon },
+           ].map((feature, idx) => (
+             <div key={idx} className="group p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-cyan-500/30 transition-all duration-300">
+                <div className="mb-4 inline-block p-3 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 group-hover:scale-110 transition-transform shadow-lg">
+                   <feature.icon className="text-cyan-400" size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">{feature.desc}</p>
+             </div>
+           ))}
+        </div>
+      </div>
+      
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/5 py-8 text-center text-gray-500 text-sm bg-black/20 backdrop-blur-lg">
+         <p>&copy; {new Date().getFullYear()} PlasticSurg CRM. Με επιφύλαξη παντός δικαιώματος.</p>
+      </footer>
+    </div>
+  );
+};
 
 // 1. StatsCard Component
 interface StatsCardProps {
@@ -299,9 +521,6 @@ const STAGE_CONFIG = {
 
 const Kanban: React.FC<KanbanProps> = ({ clients, updateClientStage }) => {
   const [draggedClientId, setDraggedClientId] = useState<string | null>(null);
-  const [selectedClientForAI, setSelectedClientForAI] = useState<Client | null>(null);
-  const [generatedEmail, setGeneratedEmail] = useState<string>('');
-  const [isLoadingAI, setIsLoadingAI] = useState(false);
 
   // Drag and Drop Handlers
   const onDragStart = (e: DragEvent, clientId: string) => {
@@ -319,17 +538,6 @@ const Kanban: React.FC<KanbanProps> = ({ clients, updateClientStage }) => {
       updateClientStage(draggedClientId, stage);
       setDraggedClientId(null);
     }
-  };
-
-  // AI Handler
-  const handleGenerateEmail = async (client: Client) => {
-    setSelectedClientForAI(client);
-    setIsLoadingAI(true);
-    setGeneratedEmail('');
-    
-    const email = await generateFollowUpEmail(client);
-    setGeneratedEmail(email);
-    setIsLoadingAI(false);
   };
 
   return (
@@ -378,13 +586,6 @@ const Kanban: React.FC<KanbanProps> = ({ clients, updateClientStage }) => {
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-50">
                       <div className="font-bold text-gray-700">€{client.totalValue.toLocaleString()}</div>
                       <div className="flex gap-2">
-                         <button 
-                          onClick={() => handleGenerateEmail(client)}
-                          className="p-1.5 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-md transition-colors"
-                          title="Generate AI Email"
-                        >
-                          <Sparkles size={16} />
-                        </button>
                         <a href={`tel:${client.phone}`} className="p-1.5 text-gray-500 hover:bg-gray-100 rounded-md transition-colors">
                           <Phone size={16} />
                         </a>
@@ -406,61 +607,6 @@ const Kanban: React.FC<KanbanProps> = ({ clients, updateClientStage }) => {
           );
         })}
       </div>
-
-      {/* AI Modal */}
-      {selectedClientForAI && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden animate-fade-in">
-            <div className="bg-purple-600 p-4 flex justify-between items-center text-white">
-              <div className="flex items-center gap-2">
-                <Sparkles size={20} />
-                <h3 className="font-semibold">AI Assistant - Email Generator</h3>
-              </div>
-              <button onClick={() => setSelectedClientForAI(null)} className="hover:bg-purple-700 p-1 rounded">
-                <X size={20} />
-              </button>
-            </div>
-            
-            <div className="p-6">
-              <div className="mb-4">
-                <p className="text-sm text-gray-500">Προσχέδιο για:</p>
-                <p className="font-medium text-gray-800">{selectedClientForAI.name} - {selectedClientForAI.procedureInterest}</p>
-              </div>
-
-              {isLoadingAI ? (
-                <div className="h-48 flex flex-col items-center justify-center text-purple-600">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2"></div>
-                  <p className="text-sm">Το Gemini σκέφτεται...</p>
-                </div>
-              ) : (
-                <textarea 
-                  className="w-full h-64 p-4 border border-gray-200 rounded-lg bg-gray-50 text-gray-800 focus:ring-2 focus:ring-purple-500 focus:outline-none resize-none font-mono text-sm"
-                  value={generatedEmail}
-                  onChange={(e) => setGeneratedEmail(e.target.value)}
-                />
-              )}
-            </div>
-            
-            <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
-              <button 
-                onClick={() => setSelectedClientForAI(null)}
-                className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg"
-              >
-                Ακύρωση
-              </button>
-              <button 
-                className="px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 shadow-sm flex items-center gap-2"
-                onClick={() => {
-                  window.location.href = `mailto:${selectedClientForAI.email}?body=${encodeURIComponent(generatedEmail)}`;
-                }}
-              >
-                <Mail size={16} />
-                Άνοιγμα στο Mail
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
@@ -1282,7 +1428,7 @@ const ClientList: React.FC<ClientListProps> = ({ clients, onAddClient, onUpdateC
                           placeholder="0.00"
                           className="w-full text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500"
                           value={transactionForm.amount}
-                          onChange={e => setTransactionForm({...transactionForm, amount: e.target.value})}
+                          onChange={e => setTransactionForm({...transactionForm, amount: Number(e.target.value)})}
                         />
                       </div>
                       <div>
@@ -1378,7 +1524,7 @@ const ClientList: React.FC<ClientListProps> = ({ clients, onAddClient, onUpdateC
 };
 
 // 5. Auth Component
-const Auth = () => {
+const Auth = ({ onBack }: { onBack?: () => void }) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -1413,7 +1559,17 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans relative">
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="absolute top-8 left-8 flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors"
+        >
+          <ArrowLeft size={20} />
+          Πίσω
+        </button>
+      )}
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
             <div className="bg-teal-600 p-3 rounded-xl text-white shadow-lg">
@@ -1525,6 +1681,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState<View>('dashboard');
   const [clients, setClients] = useState<Client[]>([]);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     // Check active session
@@ -1744,7 +1901,10 @@ export default function App() {
   }
 
   if (!session) {
-    return <Auth />;
+    if (showAuth) {
+      return <Auth onBack={() => setShowAuth(false)} />;
+    }
+    return <LandingPage onLoginClick={() => setShowAuth(true)} />;
   }
 
   const renderContent = () => {
